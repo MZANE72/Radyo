@@ -1,0 +1,6 @@
+{
+  "name": "FM Radyo",
+  "description": "İnternet olmadan ve kulaklık gerektirmeden dinlenebilen çevrimdışı yerel FM radyo alıcısı, frekans tarayıcı ve kayıt uygulaması.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
