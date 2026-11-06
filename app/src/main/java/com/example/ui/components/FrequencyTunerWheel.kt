@@ -47,6 +47,16 @@ fun FrequencyTunerWheel(
     val maxFreq = 108.0f
     val dpPerMhz = 120f // pixels per MHz
 
+    val textPaint = remember {
+        android.graphics.Paint().apply {
+            color = android.graphics.Color.parseColor("#9AA4B2")
+            textSize = 30f
+            textAlign = android.graphics.Paint.Align.CENTER
+            isAntiAlias = true
+            typeface = android.graphics.Typeface.MONOSPACE
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -99,16 +109,9 @@ fun FrequencyTunerWheel(
 
             var step = ((clampedStart * 10).roundToInt())
             val maxStep = ((clampedEnd * 10).roundToInt())
+            var loopCount = 0
 
-            val textPaint = android.graphics.Paint().apply {
-                color = android.graphics.Color.parseColor("#9AA4B2")
-                textSize = 30f
-                textAlign = android.graphics.Paint.Align.CENTER
-                isAntiAlias = true
-                typeface = android.graphics.Typeface.MONOSPACE
-            }
-
-            while (step <= maxStep) {
+            while (step <= maxStep && loopCount < 300) {
                 val currentTickMhz = step / 10f
                 val dx = (currentTickMhz - freq) * dpPerMhz
                 val tickX = centerX + dx
@@ -146,6 +149,7 @@ fun FrequencyTunerWheel(
                     }
                 }
                 step++
+                loopCount++
             }
 
             // Draw Station dots along the band

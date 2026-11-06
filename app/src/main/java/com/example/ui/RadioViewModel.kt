@@ -35,12 +35,16 @@ class RadioViewModel(application: Application) : AndroidViewModel(application) {
     private val audioEngine = FmAudioEngine(application)
     private val hardwareDetector = FmHardwareDetector(application)
 
-    private val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val vm = application.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-        vm?.defaultVibrator
-    } else {
-        @Suppress("DEPRECATION")
-        application.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+    private val vibrator: Vibrator? = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vm = application.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+            vm?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            application.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        }
+    } catch (_: Throwable) {
+        null
     }
 
     private val _radioState = MutableStateFlow(RadioState())
@@ -472,8 +476,8 @@ class RadioViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
-        audioEngine.stop()
-        stopRecordingPlayback()
+        try { audioEngine.stop() } catch (_: Throwable) {}
+        try { stopRecordingPlayback() } catch (_: Throwable) {}
         scanJob?.cancel()
         sleepTimerJob?.cancel()
         recordingTimerJob?.cancel()

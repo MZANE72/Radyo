@@ -70,4 +70,13 @@ class ExampleRobolectricTest {
         assertNotNull(report.currentAudioRoute)
         assertNotNull(report.diagnosticSummary)
     }
+
+    @Test
+    fun `radio view model initializes safely`() {
+        val app = ApplicationProvider.getApplicationContext<Application>()
+        val vm = com.example.ui.RadioViewModel(app)
+        assertNotNull(vm.radioState.value)
+        assertEquals(92.4f, vm.radioState.value.currentFrequency, 0.1f)
+        assertNotNull(vm.hardwareReport.value)
+    }
 }

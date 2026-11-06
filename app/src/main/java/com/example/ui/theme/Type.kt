@@ -8,13 +8,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.R
 
-val ShareTechMonoFontFamily = FontFamily(
-    Font(R.font.share_tech_mono, FontWeight.Normal)
-)
+val ShareTechMonoFontFamily = try {
+    FontFamily(Font(R.font.share_tech_mono, FontWeight.Normal))
+} catch (_: Throwable) {
+    FontFamily.Monospace
+}
 
-val PlusJakartaSansFontFamily = FontFamily(
-    Font(R.font.plus_jakarta_sans, FontWeight.Normal)
-)
+val PlusJakartaSansFontFamily = try {
+    FontFamily(Font(R.font.plus_jakarta_sans, FontWeight.Normal))
+} catch (_: Throwable) {
+    FontFamily.Default
+}
 
 val Typography = Typography(
     displayLarge = TextStyle(

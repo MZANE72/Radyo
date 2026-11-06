@@ -25,11 +25,16 @@ import kotlin.random.Random
 class FmAudioEngine(private val context: Context) {
 
     private val sampleRate = 44100
-    private val bufferSize = AudioTrack.getMinBufferSize(
-        sampleRate,
-        AudioFormat.CHANNEL_OUT_STEREO,
-        AudioFormat.ENCODING_PCM_16BIT
-    ) * 2
+    private val bufferSize: Int = try {
+        val min = AudioTrack.getMinBufferSize(
+            sampleRate,
+            AudioFormat.CHANNEL_OUT_STEREO,
+            AudioFormat.ENCODING_PCM_16BIT
+        )
+        if (min > 0) min * 2 else 8192
+    } catch (_: Throwable) {
+        8192
+    }
 
     private var audioTrack: AudioTrack? = null
     private var playbackJob: Job? = null
@@ -99,9 +104,13 @@ class FmAudioEngine(private val context: Context) {
                 .setTransferMode(AudioTrack.MODE_STREAM)
                 .build()
 
-            audioTrack?.play()
+            if (audioTrack?.state == AudioTrack.STATE_INITIALIZED) {
+                audioTrack?.play()
+            } else {
+                audioTrack = null
+            }
         } catch (_: Throwable) {
-            // AudioTrack init fallback
+            audioTrack = null
         }
 
         playbackJob = audioScope.launch {
